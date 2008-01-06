@@ -6,13 +6,9 @@ sub fib {
     return fib( $n - 1 ) + fib( $n - 2 );
 }
 
-sub frub {
-    return 1;
-}
+print "$$\n";
 
-sub frob {
-    return fib( 5 );
-    # return frub();
+while ( <> ) {
+    chomp;
+    print fib( $_ ), "\n";
 }
-
-print frob(), "\n";

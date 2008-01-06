@@ -12,9 +12,15 @@ Devel::DTrace - Enable dtrace probes for subroutine entry, exit
 
 =head1 SYNOPSIS
 
-  perl -MDevel::DTrace
+  perl -MDevel::DTrace some_prog
+  ps -af | grep perl
+  dtrace -p <PID> -s examples/subs-tree.d
 
 =head1 DESCRIPTION
+
+Sun's dtrace tool is currently supplied with Solaris and Mac OS 10.5. It
+allows probes to be attached to a running executable so that debug
+information may be gathered.
 
 =cut
 
