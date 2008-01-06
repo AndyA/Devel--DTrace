@@ -3,6 +3,8 @@ use warnings;
 use ExtUtils::MakeMaker;
 use Config;
 
+require 5.006;
+
 my @dtrace = qw(
   /usr/sbin/dtrace
 );
@@ -14,7 +16,7 @@ sub find_bin {
     return;
 }
 
-my $dtrace = find_bin( @dtrace ) || die "Can't find dtrace";
+my $dtrace = find_bin( @dtrace ) || die "Can't find dtrace executable";
 
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
