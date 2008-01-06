@@ -2,3 +2,10 @@ Revision history for Devel-DTrace
 
 0.01    2008-01-06
         Initial release.
+
+0.02    2008-01-06
+        Added examples to MANIFEST. Oops. Oops. Oops.
+
+0.03    2008-01-06
+        Fixed core dump in case were CvGV of the current CV is null.
+        Added dtperl interpreter.

@@ -1,10 +1,14 @@
 Changes
+dtperl.c
 DTrace.xs
+examples/subs-tree.d
 lib/Devel/DTrace.pm
 Makefile.PL
 MANIFEST
 pldtrace.d
 README
+runops.c
+runops.h
 t/000-load.t
 TODO
 xt/author/pod-coverage.t

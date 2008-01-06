@@ -24,7 +24,14 @@ _curcv( pTHX_ I32 ix ) {
 STATIC char *
 _sub_name( void ) {
     const CV *const cv = _curcv( aTHX_ cxstack_ix );
-    return cv ? GvENAME( CvGV( cv ) ) : "???";
+    if ( cv ) {
+        const GV *const gv = CvGV( cv );
+        if ( gv ) {
+            return GvENAME( gv );
+        }
+    }
+
+    return "???";
 }
 
 STATIC int

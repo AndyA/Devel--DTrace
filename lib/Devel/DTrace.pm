@@ -35,6 +35,13 @@ may be gathered.
 This module provides probes for subroutine entry and exit. See
 F<examples/subs-tree.d> for an small example D script that uses them.
 
+=head2 C<dtperl>
+
+When you install C<Devel::DTrace> you will also get a custom Perl
+interpreter called C<dtperl> which automatically installs the dtrace
+instrumented runops loop at startup. Any Perl program run under
+C<dtperl> can be probed using C<dtrace>.
+
 =head2 Limitations
 
 Note that C<dtrace> can't find any probes in the Perl executable until
@@ -43,10 +50,12 @@ exist. That means that you can't use C<dtrace> to launch the perl
 executable. Perl must already be running and have loaded
 C<Devel::DTrace> before you can connect to it with C<dtrace>.
 
+The C<dtperl> interpreter does not have this limitation.
+
 =cut
 
 BEGIN {
-    our $VERSION = '0.02';
+    our $VERSION = '0.03';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }
