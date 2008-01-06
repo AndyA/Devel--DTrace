@@ -46,7 +46,7 @@ C<Devel::DTrace> before you can connect to it with C<dtrace>.
 =cut
 
 BEGIN {
-    our $VERSION = '0.02';
+    our $VERSION = '0.03';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }
