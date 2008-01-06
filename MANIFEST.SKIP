@@ -19,3 +19,4 @@
 \.tmproj$
 
 \DTrace\.(c|bs|o)$
+pldtrace.h

@@ -14,7 +14,7 @@ _op_name( int t ) {
     case OP_SCALAR:
         return "OP_SCALAR";
     case OP_PUSHMARK:
-        return "OP_PUSHMARK";
+        return "OP_ ";
     case OP_WANTARRAY:
         return "OP_WANTARRAY";
     case OP_CONST:
@@ -761,13 +761,13 @@ _indent( I32 depth ) {
 
 STATIC char *
 _sub_name( void ) {
-    CV *const cv = _curcv( aTHX_ cxstack_ix );
-    return cv == NULL ? "?" : GvENAME( CvGV( cv ) );
+    const CV *const cv = _curcv( aTHX_ cxstack_ix );
+    return cv ? GvENAME( CvGV( cv ) ) : "???";
 }
 
 STATIC int
 _runops_dtrace( pTHX ) {
-    OP *last_op = NULL;
+    const OP *last_op = NULL;
     I32 last_cxstack_ix = 0;
     const char *last_func = NULL;
 
@@ -799,10 +799,9 @@ _runops_dtrace( pTHX ) {
     return 0;
 }
 
-static void
+STATIC void
 _hook_runops( void ) {
     if ( PL_runops != _runops_dtrace ) {
-        // runops_old = PL_runops;
         PL_runops = _runops_dtrace;
     }
 }

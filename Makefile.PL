@@ -3,6 +3,19 @@ use warnings;
 use ExtUtils::MakeMaker;
 use Config;
 
+my @dtrace = qw(
+  /usr/sbin/dtrace
+);
+
+sub find_bin {
+    for ( @_ ) {
+        return $_ if -x $_;
+    }
+    return;
+}
+
+my $dtrace = find_bin( @dtrace ) || die "Can't find dtrace";
+
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
     NAME          => 'Devel::DTrace',
@@ -11,16 +24,11 @@ my %args = (
     VERSION_FROM  => 'lib/Devel/DTrace.pm',
     ABSTRACT_FROM => 'lib/Devel/DTrace.pm',
     PL_FILES      => {},
-    PREREQ_PM     => {
-        'Test::More' => 0,
-    },
-    LIBS   => [''],
-    DEFINE => '',
-    # INC    => '-I. -Isupport',
-    # OBJECT => 'DTrace.o',
+    PREREQ_PM     => { 'Test::More' => 0, },
 
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES    => 'Devel-DTrace-*' },
+    dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean  => { FILES      => 'Devel-DTrace-* pldtrace.h' },
+    depend => { 'DTrace.o' => 'pldtrace.h' },
 );
 
 if ( $Config{'ccname'} =~ /gcc/ ) {
@@ -28,3 +36,8 @@ if ( $Config{'ccname'} =~ /gcc/ ) {
 }
 
 WriteMakefile( %args );
+
+sub MY::postamble {
+    return "pldtrace.h: pldtrace.d\n"
+      . "\t$dtrace -h -s pldtrace.d -o pldtrace.h\n\n";
+}
