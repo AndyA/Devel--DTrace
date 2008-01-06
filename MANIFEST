@@ -1,5 +1,6 @@
 Changes
 DTrace.xs
+examples/subs-tree.d
 lib/Devel/DTrace.pm
 Makefile.PL
 MANIFEST
