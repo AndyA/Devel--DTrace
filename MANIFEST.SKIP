@@ -18,6 +18,7 @@
 ^[.]
 \.tmproj$
 
+\.o$
 ^DTrace\.(c|bs|o)$
 ^pldtrace\.h$
 ^dtperl$
