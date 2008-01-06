@@ -55,7 +55,7 @@ The C<dtperl> interpreter does not have this limitation.
 =cut
 
 BEGIN {
-    our $VERSION = '0.03';
+    our $VERSION = '0.04';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }
