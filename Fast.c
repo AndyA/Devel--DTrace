@@ -27,7 +27,7 @@ XS( XS_Devel__LeakTrace__Fast__hook_runops )
 #endif
     if ( items != 0 )
         Perl_croak( aTHX_ "Usage: %s(%s)",
-                    "Devel::LeakTrace::Fast::_hook_runops", "" );
+                    "Devel::DTrace::_hook_runops", "" );
     PERL_UNUSED_VAR( cv );      /* -W */
     PERL_UNUSED_VAR( ax );      /* -Wall */
     SP -= items;
@@ -53,7 +53,7 @@ XS( XS_Devel__LeakTrace__Fast__reset_counters )
 #endif
     if ( items != 0 )
         Perl_croak( aTHX_ "Usage: %s(%s)",
-                    "Devel::LeakTrace::Fast::_reset_counters", "" );
+                    "Devel::DTrace::_reset_counters", "" );
     PERL_UNUSED_VAR( cv );      /* -W */
     PERL_UNUSED_VAR( ax );      /* -Wall */
     SP -= items;
@@ -79,7 +79,7 @@ XS( XS_Devel__LeakTrace__Fast__show_used )
 #endif
     if ( items != 0 )
         Perl_croak( aTHX_ "Usage: %s(%s)",
-                    "Devel::LeakTrace::Fast::_show_used", "" );
+                    "Devel::DTrace::_show_used", "" );
     PERL_UNUSED_VAR( cv );      /* -W */
     {
 #line 25 "Fast.xs"
@@ -109,11 +109,11 @@ XS( boot_Devel__LeakTrace__Fast )
     PERL_UNUSED_VAR( items );   /* -W */
     XS_VERSION_BOOTCHECK;
 
-    newXSproto( "Devel::LeakTrace::Fast::_hook_runops",
+    newXSproto( "Devel::DTrace::_hook_runops",
                 XS_Devel__LeakTrace__Fast__hook_runops, file, "" );
-    newXSproto( "Devel::LeakTrace::Fast::_reset_counters",
+    newXSproto( "Devel::DTrace::_reset_counters",
                 XS_Devel__LeakTrace__Fast__reset_counters, file, "" );
-    newXSproto( "Devel::LeakTrace::Fast::_show_used",
+    newXSproto( "Devel::DTrace::_show_used",
                 XS_Devel__LeakTrace__Fast__show_used, file, "" );
     if ( PL_unitcheckav )
         call_list( PL_scopestack_ix, PL_unitcheckav );

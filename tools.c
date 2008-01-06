@@ -38,7 +38,7 @@ static hash *brute = NULL;
 
 static void
 nomem( void ) {
-    fprintf( stderr, "Devel::LeakTrace::Fast: Out of memory\n" );
+    fprintf( stderr, "Devel::DTrace: Out of memory\n" );
     exit( 1 );
 }
 

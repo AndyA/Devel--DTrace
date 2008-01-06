@@ -1,4 +1,4 @@
-package Devel::LeakTrace::Fast;
+package Devel::DTrace;
 
 require 5.006;
 
@@ -8,7 +8,7 @@ use base 'DynaLoader';
 
 BEGIN {
     our $VERSION = '0.12';
-    bootstrap Devel::LeakTrace::Fast $VERSION;
+    bootstrap Devel::DTrace $VERSION;
     _hook_runops();
 }
 
@@ -26,21 +26,21 @@ __END__
 
 =head1 NAME
 
-Devel::LeakTrace::Fast - indicate where leaked variables are coming from.
+Devel::DTrace - indicate where leaked variables are coming from.
 
 =head1 SYNOPSIS
 
-  perl -MDevel::LeakTrace::Fast -e '{ my $foo; $foo = \$foo }'
+  perl -MDevel::DTrace -e '{ my $foo; $foo = \$foo }'
   leaked SV(0x528d0) from -e line 1
   leaked SV(0x116a10) from -e line 1
 
 =head1 DESCRIPTION
 
-Devel::LeakTrace::Fast is a rewrite of Devel::LeakTrace. Like
+Devel::DTrace is a rewrite of Devel::LeakTrace. Like
 Devel::LeakTrace it uses the pluggable runops feature found in perl 5.6
 and later in order to trace SV allocations of a running program.
 
-At END time Devel::LeakTrace::Fast identifies any remaining variables, and
+At END time Devel::DTrace identifies any remaining variables, and
 reports on the lines in which the came into existence.
 
 Note that by default state is first recorded during the INIT phase.

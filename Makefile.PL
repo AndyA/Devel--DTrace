@@ -5,7 +5,7 @@ use Config;
 
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
-    NAME          => 'Devel::LeakTrace::Fast',
+    NAME          => 'Devel::DTrace',
     AUTHOR        => 'Andy Armstrong <andy@hexten.net>',
     LICENSE       => 'perl',
     VERSION_FROM  => 'lib/Devel/LeakTrace/Fast.pm',
@@ -20,7 +20,7 @@ my %args = (
     OBJECT => 'buffer.o hash.o list.o tools.o Fast.o',
 
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES    => 'Devel-LeakTrace-Fast-*' },
+    clean => { FILES    => 'Devel-DTrace-*' },
 );
 
 if ( $Config{'ccname'} =~ /gcc/ ) {

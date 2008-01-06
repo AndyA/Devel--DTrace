@@ -1,7 +1,7 @@
 #include "common.h"
 #include "tools.h"
 
-MODULE = Devel::LeakTrace::Fast PACKAGE = Devel::LeakTrace::Fast
+MODULE = Devel::DTrace PACKAGE = Devel::DTrace
 
 PROTOTYPES: ENABLE
 

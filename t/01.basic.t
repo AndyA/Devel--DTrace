@@ -6,7 +6,7 @@ my $inc = join(' ', map { "-I$_" } @INC);
 
 sub output ($) {
     my $code = shift;
-    `$^X $inc -MDevel::LeakTrace::Fast -e'$code' 2>&1`
+    `$^X $inc -MDevel::DTrace -e'$code' 2>&1`
 }
 
 is( output '1;', '', 'no statements = no leak' );
