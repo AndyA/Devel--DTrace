@@ -27,10 +27,11 @@ my %args = (
     ABSTRACT_FROM => 'lib/Devel/DTrace.pm',
     PL_FILES      => {},
     PREREQ_PM     => { 'Test::More' => 0, },
+    OBJECT        => 'runops.o DTrace.o',
 
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean  => { FILES      => 'Devel-DTrace-* pldtrace.h' },
-    depend => { 'DTrace.o' => 'pldtrace.h' },
+    clean  => { FILES      => 'Devel-DTrace-* pldtrace.h *.o' },
+    depend => { 'runops.o' => 'pldtrace.h' },
 );
 
 if ( $Config{'ccname'} =~ /gcc/ ) {
