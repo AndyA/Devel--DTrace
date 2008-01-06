@@ -17,3 +17,5 @@
 
 ^[.]
 \.tmproj$
+
+\DTrace\.(c|bs|o)$
