@@ -14,28 +14,28 @@
 
 #ifdef RUNOPS_FAKE
 
-#define PROBE_ENTRY(func, file, line)               \
+#define PROBE_ENTRY(func, file, line, sp)           \
     if ( func && file ) {                           \
-        printf( "ENTRY(%s, %s, %d)\n", func, file, line ); \
+        printf( "ENTRY(%s, %s, %d, %d)\n", func, file, line, sp ); \
     }
 
-#define PROBE_RETURN(func, file, line)              \
+#define PROBE_RETURN(func, file, line, sp)          \
     if ( func && file ) {                           \
-        printf( "RETURN(%s, %s, %d)\n", func, file, line ); \
+        printf( "RETURN(%s, %s, %d, %d)\n", func, file, line, sp ); \
     }
 
 #define RUNOPS_DTRACE _runops_dtrace_fake
 
 #else
 
-#define PROBE_ENTRY(func, file, line)               \
+#define PROBE_ENTRY(func, file, line, sp)           \
     if ( PERLXS_SUB_ENTRY_ENABLED(  ) && func && file ) { \
-        PERLXS_SUB_ENTRY( func, file, line );       \
+        PERLXS_SUB_ENTRY( func, file, line, sp );   \
     }
 
-#define PROBE_RETURN(func, file, line)              \
+#define PROBE_RETURN(func, file, line, sp)          \
     if ( PERLXS_SUB_RETURN_ENABLED(  ) && func && file ) { \
-        PERLXS_SUB_RETURN( func, file, line );      \
+        PERLXS_SUB_RETURN( func, file, line, sp );  \
     }
 
 #define RUNOPS_DTRACE _runops_dtrace
@@ -67,7 +67,7 @@ RUNOPS_DTRACE( pTHX ) {
             /* enter sub */
             last_func = _sub_name( aTHX );
             PROBE_ENTRY( ( char * ) last_func, CopFILE( PL_curcop ),
-                         CopLINE( PL_curcop ) );
+                         CopLINE( PL_curcop ), cxstack_ix );
         }
         else if ( cxstack_ix < last_cxstack_ix ) {
             /* leave sub or eval */
@@ -76,7 +76,8 @@ RUNOPS_DTRACE( pTHX ) {
             }
             else {
                 PROBE_RETURN( ( char * ) last_func,
-                              CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
+                              CopFILE( PL_curcop ), CopLINE( PL_curcop ),
+                              cxstack_ix );
                 last_func = _sub_name( aTHX );
             }
         }

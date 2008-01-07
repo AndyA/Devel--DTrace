@@ -45,5 +45,7 @@ sub dtrace_run {
     open my $proc, '-|', @cmd or die "Can't run @cmd ($!)\n";
     chomp( my @out = <$proc> );
     close $proc or die "@cmd failed ($!)\n";
+    # Quick and dirty, strip the stack depth
+    s/,\s*\d+\)/)/ for @out;
     return \@out;
 }

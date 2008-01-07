@@ -6,9 +6,6 @@ sub fib {
     return fib( $n - 1 ) + fib( $n - 2 );
 }
 
-print "$$\n";
-
-while ( <> ) {
-    chomp;
-    print fib( $_ ), "\n";
+while ( 1 ) {
+    print fib( int( rand( 40 ) ) ), "\n";
 }
