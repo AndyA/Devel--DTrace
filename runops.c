@@ -5,11 +5,10 @@
 #include "plxsdtrace.h"
 #include "runops.h"
 
+// STATIC const char *_eval_ = "(eval)";
+
 STATIC CV *
 _curcv( pTHX_ I32 ix ) {
-#ifdef dVAR
-    dVAR;
-#endif
     for ( ; ix > 0; ix-- ) {
         const PERL_CONTEXT *const cx = &cxstack[ix];
         if ( CxTYPE( cx ) == CXt_SUB || CxTYPE( cx ) == CXt_FORMAT )
@@ -23,8 +22,8 @@ _curcv( pTHX_ I32 ix ) {
     return NULL;
 }
 
-STATIC char *
-_sub_name(  ) {
+STATIC const char *
+_sub_name( pTHX ) {
     const CV *const cv = _curcv( aTHX_ cxstack_ix );
     if ( cv ) {
         const GV *const gv = CvGV( cv );
@@ -33,43 +32,26 @@ _sub_name(  ) {
         }
     }
 
-    return "???";
+    return NULL;
 }
 
-STATIC int
-_runops_dtrace( pTHX ) {
-    const OP *last_op = NULL;
-    I32 last_cxstack_ix = 0;
-    const char *last_func = NULL;
+#undef RUNOPS_FAKE
+#include "runops-loop.h"
+#define RUNOPS_FAKE
+#include "runops-loop.h"
 
-    while ( ( PL_op = CALL_FPTR( PL_op->op_ppaddr ) ( aTHX ) ) ) {
-        PERL_ASYNC_CHECK(  );
-
-        if ( last_op && last_op->op_type == OP_ENTERSUB ) {
-            /* last OP was OP_ENTERSUB so we're inside the sub now */
-            last_func = _sub_name(  );
-            PERLXS_SUB_ENTRY( ( char * ) last_func,
-                              CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
-        }
-        else if ( cxstack_ix < last_cxstack_ix ) {
-            /* stack popped so we've left the sub */
-            PERLXS_SUB_RETURN( ( char * ) last_func,
-                               CopFILE( PL_curcop ),
-                               CopLINE( PL_curcop ) );
-            last_func = _sub_name(  );
-        }
-
-        last_op = PL_op;
-        last_cxstack_ix = cxstack_ix;
-    }
-
-    TAINT_NOT;
-    return 0;
+STATIC bool
+_should_fake(  ) {
+    const char *fake = getenv( FAKE_ENV );
+    return fake && atoi( fake );
 }
 
 void
-runops_hook( void ) {
-    if ( PL_runops != _runops_dtrace ) {
-        PL_runops = _runops_dtrace;
+runops_hook(  ) {
+    runops_proc_t runops =
+        _should_fake(  )? _runops_dtrace_fake : _runops_dtrace;
+
+    if ( PL_runops != runops ) {
+        PL_runops = runops;
     }
 }

@@ -20,5 +20,6 @@
 
 \.o$
 ^DTrace\.(c|bs|o)$
-^pldtrace\.h$
+^plxsdtrace\.h$
+^dtperl\.o$
 ^dtperl$
