@@ -36,9 +36,9 @@ my %args = (
     depend => { 'runops.o' => 'plxsdtrace.h' },
 );
 
-if ( $Config{'ccname'} =~ /gcc/ ) {
-    $args{CCFLAGS} = '-Wall';
-}
+# if ( $Config{'ccname'} =~ /gcc/ ) {
+#     $args{CCFLAGS} = '-Wall';
+# }
 
 WriteMakefile( %args );
 
