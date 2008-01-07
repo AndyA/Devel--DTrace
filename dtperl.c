@@ -8,7 +8,7 @@ EXTERN_C void boot_DynaLoader( pTHX_ CV * cv );
 
 static void
 xs_init( pTHX ) {
-    static const char file[] = __FILE__;
+    static char file[] = __FILE__;
     dXSUB_SYS;
     newXS( "DynaLoader::boot_DynaLoader", boot_DynaLoader, file );
 }
@@ -17,7 +17,9 @@ xs_init( pTHX ) {
 
 int
 main( int argc, char **argv, char **env ) {
+#ifdef dVAR
     dVAR;
+#endif
     int exit_status;
 
 #ifdef PERL_GLOBAL_STRUCT

@@ -5,7 +5,7 @@ examples/subs-tree.d
 lib/Devel/DTrace.pm
 Makefile.PL
 MANIFEST
-pldtrace.d
+plxsdtrace.d
 README
 runops.c
 runops.h

@@ -2,7 +2,7 @@
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
-#include "pldtrace.h"
+#include "plxsdtrace.h"
 #include "runops.h"
 
 STATIC CV *
