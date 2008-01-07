@@ -7,7 +7,9 @@
 
 STATIC CV *
 _curcv( pTHX_ I32 ix ) {
+#ifdef dVAR
     dVAR;
+#endif
     for ( ; ix > 0; ix-- ) {
         const PERL_CONTEXT *const cx = &cxstack[ix];
         if ( CxTYPE( cx ) == CXt_SUB || CxTYPE( cx ) == CXt_FORMAT )
@@ -22,7 +24,7 @@ _curcv( pTHX_ I32 ix ) {
 }
 
 STATIC char *
-_sub_name( void ) {
+_sub_name(  ) {
     const CV *const cv = _curcv( aTHX_ cxstack_ix );
     if ( cv ) {
         const GV *const gv = CvGV( cv );
