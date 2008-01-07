@@ -7,9 +7,14 @@ Makefile.PL
 MANIFEST
 plxsdtrace.d
 README
+runops-loop.h
 runops.c
 runops.h
 t/000-load.t
+t/devel-dtrace.t
+t/scripts/eval.pl
+t/scripts/fib.pl
+t/scripts/fump.pl
 TODO
 xt/author/pod-coverage.t
 xt/author/pod.t

@@ -1,6 +1,6 @@
 package Devel::DTrace;
 
-require 5.006;
+require 5.008;
 
 use strict;
 use warnings;
@@ -52,10 +52,28 @@ C<Devel::DTrace> before you can connect to it with C<dtrace>.
 
 The C<dtperl> interpreter does not have this limitation.
 
+=head2 Other Notes
+
+It's difficult to test the dtrace probes. To do so the tests would have
+to run as root and I don't like doing that. So that I can get I<some>
+test coverage the environment variable C<DEVEL_DTRACE_RUNOPS_FAKE>
+causes the probes to send output directly to STDOUT rather to dtrace.
+
+Note that this variable is only checked when C<Devel::DTrace> is
+loaded or C<dtperl> starts up so it can't be used to toggle tracing on
+and off while a process is running. However you may find it convenient
+in some cases to
+
+    $ DEVEL_DTRACE_RUNOPS_FAKE=1 dtperl someprog.pl
+
+=head2 Known Bugs
+
+Extra, spurious trace output is generated on exit from an eval.
+
 =cut
 
 BEGIN {
-    our $VERSION = '0.05';
+    our $VERSION = '0.06';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }
@@ -63,7 +81,6 @@ BEGIN {
 1;
 
 __END__
-
 
 =head1 AUTHOR
 

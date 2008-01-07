@@ -54,6 +54,7 @@ main( int argc, char **argv, char **env ) {
     exit_status = perl_parse( my_perl, xs_init, argc, argv, NULL );
 
     if ( !exit_status ) {
+        runops_hook(  );
         perl_run( my_perl );
     }
 

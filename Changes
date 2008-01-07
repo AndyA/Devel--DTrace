@@ -12,3 +12,7 @@ Revision history for Devel-DTrace
 
 0.04    2008-01-07
         Made it work on Mac OS perl 5.8.8.
+
+0.05    2008-01-07
+        Fixed eval double counting
+        Added tests
