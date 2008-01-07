@@ -53,8 +53,10 @@ sub MY::postamble {
 
     chomp for values %defn;
 
-    $postamble =~ s/^ +/\t/mg;
-    $postamble =~ s/(%(\w+)%)/$defn{$2}||$1/ge;
+    for ( $postamble ) {
+        s/^ +/\t/mg;
+        s/(%(\w+)%)/$defn{$2}||$1/ge;
+    }
 
     return $postamble;
 }
