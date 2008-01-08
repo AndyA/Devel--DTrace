@@ -4,6 +4,9 @@
 
 static PerlInterpreter *my_perl;
 
+#ifdef SOLARIS
+static void *xs_init = NULL;
+#else
 EXTERN_C void boot_DynaLoader( pTHX_ CV * cv );
 
 static void
@@ -12,6 +15,7 @@ xs_init( pTHX ) {
     dXSUB_SYS;
     newXS( "DynaLoader::boot_DynaLoader", boot_DynaLoader, file );
 }
+#endif
 
 int
 main( int argc, char **argv, char **env ) {
