@@ -4,6 +4,15 @@
 
 static PerlInterpreter *my_perl;
 
+/* TODO: Work out why we can't build a dynamic dtperl on Solaris. I
+ * expect it's something simple that I'm missing.
+ */
+
+#if defined (__SVR4) && defined (__sun)
+/* Solaris */
+static void *xs_init = NULL;
+#else
+/* Not Solaris */
 EXTERN_C void boot_DynaLoader( pTHX_ CV * cv );
 
 static void
@@ -12,6 +21,7 @@ xs_init( pTHX ) {
     dXSUB_SYS;
     newXS( "DynaLoader::boot_DynaLoader", boot_DynaLoader, file );
 }
+#endif
 
 int
 main( int argc, char **argv, char **env ) {

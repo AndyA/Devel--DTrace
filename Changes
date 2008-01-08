@@ -16,3 +16,6 @@ Revision history for Devel-DTrace
 0.05    2008-01-07
         Fixed eval double counting
         Added tests
+
+0.06    2008-01-08
+        Builds on Solaris but dtperl is static.

@@ -78,8 +78,8 @@ sub MY::postamble {
         (
             DTRACE_OBJ
             ? rule(
-                'plxsdtrace.o' => 'plxsdtrace.d',
-                "$dtrace -G -s plxsdtrace.d -o plxsdtrace.o"
+                'plxsdtrace.o' => 'plxsdtrace.d runops.o',
+                "$dtrace -G -s plxsdtrace.d runops.o -o plxsdtrace.o"
               )
             : ()
         ),
