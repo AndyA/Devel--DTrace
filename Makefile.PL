@@ -68,7 +68,7 @@ plxsdtrace.h: plxsdtrace.d
     $dtrace -h -s plxsdtrace.d -o plxsdtrace.h
 
 dtperl: dtperl.o runops.o
-    \$(CC) $ccopts -o dtperl $ldopts dtperl.o $obj
+    \$(LD) $ccopts -o dtperl $ldopts dtperl.o $obj
 EOT
 
     if ( IS_SOLARIS ) {
