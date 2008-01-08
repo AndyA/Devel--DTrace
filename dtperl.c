@@ -16,9 +16,6 @@ xs_init( pTHX ) {
 int
 main( int argc, char **argv, char **env ) {
     int exit_status;
-#ifndef PERL_USE_SAFE_PUTENV
-    PL_use_safe_putenv = 0;
-#endif
 
 #ifdef PERL_GLOBAL_STRUCT
 #define PERLVAR(var,type) /**/

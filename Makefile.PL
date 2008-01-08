@@ -6,6 +6,8 @@ use Config;
 
 require 5.008;
 
+use constant IS_SOLARIS => ( $^O =~ /solaris/ );
+
 my @dtrace = qw(
   /usr/sbin/dtrace
 );
@@ -26,6 +28,9 @@ unless ( $dtrace ) {
     exit 0;    # == NA test result
 }
 
+my @obj = qw( runops.o DTrace.o );
+push @obj, 'plxsdtrace.o' if IS_SOLARIS;
+
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
 
@@ -39,7 +44,7 @@ my %args = (
         'Test::More'        => 0,
         'Test::Differences' => 0
     },
-    OBJECT    => 'runops.o DTrace.o',
+    OBJECT    => join( ' ', @obj ),
     EXE_FILES => ['dtperl'],
 
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
@@ -54,27 +59,24 @@ my %args = (
 WriteMakefile( %args );
 
 sub MY::postamble {
-    my $postamble = do { local $/; <DATA> };
+    chomp( my ( $ccopts, $ldopts ) = ( ccopts(), ldopts() ) );
 
-    my %defn = (
-        dtrace => $dtrace,
-        ccopts => ccopts(),
-        ldopts => ldopts()
-    );
+    my @mf = ( <<"EOT");
+plxsdtrace.h: plxsdtrace.d
+    $dtrace -h -s plxsdtrace.d -o plxsdtrace.h
 
-    chomp for values %defn;
+dtperl: dtperl.o runops.o
+    \$(CC) $ccopts -o dtperl $ldopts dtperl.o runops.o
+EOT
 
-    for ( $postamble ) {
-        s/^ +/\t/mg;
-        s/(%(\w+)%)/$defn{$2}||$1/ge;
+    if ( IS_SOLARIS ) {
+        push @mf, <<"EOT";
+plxsdtrace.o: plxsdtrace.d
+    $dtrace -G -s plxsdtrace.d -o plxsdtrace.o
+EOT
     }
+
+    ( my $postamble = join "\n\n", @mf ) =~ s/^ +/\t/mg;
 
     return $postamble;
 }
-
-__DATA__
-plxsdtrace.h: plxsdtrace.d
-    %dtrace% -h -s plxsdtrace.d -o plxsdtrace.h
-
-dtperl: dtperl.o runops.o
-    $(CC) %ccopts% -o dtperl %ldopts% dtperl.o runops.o
