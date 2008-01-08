@@ -28,7 +28,7 @@ unless ( $dtrace ) {
     exit 0;    # == NA test result
 }
 
-my @obj = qw( runops.o DTrace.o );
+my @obj = qw( runops.o );
 push @obj, 'plxsdtrace.o' if IS_SOLARIS;
 
 my %args = (
@@ -44,7 +44,7 @@ my %args = (
         'Test::More'        => 0,
         'Test::Differences' => 0
     },
-    OBJECT    => join( ' ', @obj ),
+    OBJECT    => join( ' ', @obj, 'DTrace.o' ),
     EXE_FILES => ['dtperl'],
 
     dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
@@ -61,12 +61,14 @@ WriteMakefile( %args );
 sub MY::postamble {
     chomp( my ( $ccopts, $ldopts ) = ( ccopts(), ldopts() ) );
 
+    my $obj = join ' ', @obj;
+
     my @mf = ( <<"EOT");
 plxsdtrace.h: plxsdtrace.d
     $dtrace -h -s plxsdtrace.d -o plxsdtrace.h
 
 dtperl: dtperl.o runops.o
-    \$(CC) $ccopts -o dtperl $ldopts dtperl.o runops.o
+    \$(CC) $ccopts -o dtperl $ldopts dtperl.o $obj
 EOT
 
     if ( IS_SOLARIS ) {
