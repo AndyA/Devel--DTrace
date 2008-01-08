@@ -8,6 +8,10 @@ require 5.008;
 
 use constant IS_SOLARIS => ( $^O =~ /solaris/ );
 
+# Whether we need to have dtrace create an object file and link
+# against it.
+use constant DTRACE_OBJ => IS_SOLARIS;
+
 my @dtrace = qw(
   /usr/sbin/dtrace
 );
@@ -20,6 +24,7 @@ sub find_bin {
 }
 
 my $dtrace = find_bin( @dtrace );
+
 unless ( $dtrace ) {
     warn "Can't find dtrace executable. "
       . "I looked in the following places:\n";
@@ -28,8 +33,7 @@ unless ( $dtrace ) {
     exit 0;    # == NA test result
 }
 
-my @obj = qw( runops.o );
-unshift @obj, 'plxsdtrace.o' if IS_SOLARIS;
+my @obj = ( 'runops.o', ( DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
@@ -58,25 +62,34 @@ my %args = (
 
 WriteMakefile( %args );
 
+sub rule {
+    my ( $target, $dep, @steps ) = @_;
+    return "$target: $dep\n" . ( join "\n", map { "\t$_" } @steps );
+}
+
 sub MY::postamble {
     chomp( my ( $ccopts, $ldopts ) = ( ccopts(), ldopts() ) );
 
-    my $obj = join ' ', @obj;
-
-    my @mf = ( <<"EOT");
-plxsdtrace.h: plxsdtrace.d
-    $dtrace -h -s plxsdtrace.d -o plxsdtrace.h
-
-dtperl: dtperl.o runops.o
-    \$(LD) $ccopts -o dtperl $ldopts dtperl.o $obj
-EOT
-
-    if ( IS_SOLARIS ) {
-        push @mf, <<"EOT";
-plxsdtrace.o: plxsdtrace.d
-    $dtrace -G -s plxsdtrace.d -o plxsdtrace.o
-EOT
-    }
+    my @mf = (
+        rule(
+            'plxsdtrace.h' => 'plxsdtrace.d',
+            "$dtrace -h -s plxsdtrace.d -o plxsdtrace.h"
+        ),
+        (
+            DTRACE_OBJ
+            ? rule(
+                'plxsdtrace.o' => 'plxsdtrace.d',
+                "$dtrace -G -s plxsdtrace.d -o plxsdtrace.o"
+              )
+            : ()
+        ),
+        rule(
+            'dtperl' => 'dtperl.o runops.o',
+            join( ' ',
+                "\$(LD) $ccopts -o dtperl $ldopts", @obj,
+                'dtperl.o' )
+        ),
+    );
 
     ( my $postamble = join "\n\n", @mf ) =~ s/^ +/\t/mg;
 
