@@ -77,7 +77,7 @@ Extra, spurious trace output is generated on exit from an eval.
 =cut
 
 BEGIN {
-    our $VERSION = '0.06';
+    our $VERSION = '0.07';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }
