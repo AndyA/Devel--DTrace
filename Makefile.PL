@@ -29,7 +29,7 @@ unless ( $dtrace ) {
 }
 
 my @obj = qw( runops.o );
-push @obj, 'plxsdtrace.o' if IS_SOLARIS;
+unshift @obj, 'plxsdtrace.o' if IS_SOLARIS;
 
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
