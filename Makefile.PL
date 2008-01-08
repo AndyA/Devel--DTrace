@@ -70,9 +70,6 @@ sub rule {
 sub MY::postamble {
     chomp( my ( $ccopts, $ldopts ) = ( ccopts(), ldopts() ) );
 
-    # Kludgy
-    $ccopts = "$ccopts -DSOLARIS" if IS_SOLARIS;
-
     my @mf = (
         rule(
             'plxsdtrace.h' => 'plxsdtrace.d',
