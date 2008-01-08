@@ -4,18 +4,18 @@
 
 static PerlInterpreter *my_perl;
 
-#ifdef SOLARIS
+// #ifdef SOLARIS
 static void *xs_init = NULL;
-#else
-EXTERN_C void boot_DynaLoader( pTHX_ CV * cv );
-
-static void
-xs_init( pTHX ) {
-    static char file[] = __FILE__;
-    dXSUB_SYS;
-    newXS( "DynaLoader::boot_DynaLoader", boot_DynaLoader, file );
-}
-#endif
+// #else
+// EXTERN_C void boot_DynaLoader( pTHX_ CV * cv );
+// 
+// static void
+// xs_init( pTHX ) {
+//     static char file[] = __FILE__;
+//     dXSUB_SYS;
+//     newXS( "DynaLoader::boot_DynaLoader", boot_DynaLoader, file );
+// }
+// #endif
 
 int
 main( int argc, char **argv, char **env ) {
