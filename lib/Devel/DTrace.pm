@@ -12,7 +12,7 @@ Devel::DTrace - Enable dtrace probes for subroutine entry, exit
 
 =head1 SYNOPSIS
 
-    $ perl -MDevel::DTrace prog.pl
+    $ perl -MDevel::DTrace prog.pl &
     $ ps -af | grep perl
     $ dtrace -p <PID> -s examples/subs-tree.d
 
@@ -70,14 +70,10 @@ in some cases to
 
     $ DEVEL_DTRACE_RUNOPS_FAKE=1 dtperl someprog.pl
 
-=head2 Known Bugs
-
-Extra, spurious trace output is generated on exit from an eval.
-
 =cut
 
 BEGIN {
-    our $VERSION = '0.07';
+    our $VERSION = '0.08';
     bootstrap Devel::DTrace $VERSION;
     _dtrace_hook_runops();
 }

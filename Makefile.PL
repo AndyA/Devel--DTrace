@@ -33,6 +33,22 @@ unless ( $dtrace ) {
     exit 0;    # == NA test result
 }
 
+# Find out whether we have a dtrace that supports -h
+
+if (
+      system "$dtrace -h -s plxsdtrace.d -o plxsdtrace.tmp "
+    . ">/dev/null 2>&1 "
+    . "&& rm plxsdtrace.tmp" ) {
+    warn "It seems that $dtrace doesn't support the -h flag.\n";
+    warn "Can't continue.\n";
+    exit 0;    # == NA test result
+}
+
+if ( $Config{usedtrace} ) {
+    print "Your Perl already supports DTrace natively.\n"
+      . "Will still build Devel::DTrace but you probably don't need it.\n";
+}
+
 my @obj = ( 'runops.o', ( DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (
@@ -51,7 +67,10 @@ my %args = (
     OBJECT    => join( ' ', @obj, 'DTrace.o' ),
     EXE_FILES => ['dtperl'],
 
-    dist => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    dist => {
+        COMPRESS => 'gzip -9f',
+        SUFFIX   => 'gz',
+    },
 
     clean => {
         FILES => [ 'Devel-DTrace-*', 'plxsdtrace.h', '*.o', 'dtperl' ]
