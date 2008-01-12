@@ -24,3 +24,5 @@ Revision history for Devel-DTrace
         Added test for dtrace enabled Perl.
         Added test for dtrace not supporting -h switch.
 
+0.08	2008-01-12
+	Made detection of need for object file automatic.

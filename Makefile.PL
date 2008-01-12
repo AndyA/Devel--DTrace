@@ -8,10 +8,6 @@ require 5.008;
 
 use constant IS_SOLARIS => ( $^O =~ /solaris/ );
 
-# Whether we need to have dtrace create an object file and link
-# against it.
-use constant DTRACE_OBJ => IS_SOLARIS;
-
 my @dtrace = qw(
   /usr/sbin/dtrace
 );
@@ -44,12 +40,22 @@ if (
     exit 0;    # == NA test result
 }
 
+# Whether we need to have dtrace create an object file and link
+# against it.
+my $DTRACE_OBJ = 0;
+unless (
+      system "$dtrace -G -s plxsdtrace.d -o plxsdtrace.tmp "
+    . ">/dev/null 2>&1 "
+    . "&& rm plxsdtrace.tmp" ) {
+    $DTRACE_OBJ = 1;
+}
+
 if ( $Config{usedtrace} ) {
     print "Your Perl already supports DTrace natively.\n"
       . "Will still build Devel::DTrace but you probably don't need it.\n";
 }
 
-my @obj = ( 'runops.o', ( DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
+my @obj = ( 'runops.o', ( $DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (
     ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
@@ -95,7 +101,7 @@ sub MY::postamble {
             "$dtrace -h -s plxsdtrace.d -o plxsdtrace.h"
         ),
         (
-            DTRACE_OBJ
+            $DTRACE_OBJ
             ? rule(
                 'plxsdtrace.o' => 'plxsdtrace.d runops.o',
                 "$dtrace -G -s plxsdtrace.d runops.o -o plxsdtrace.o"
