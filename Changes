@@ -19,3 +19,8 @@ Revision history for Devel-DTrace
 
 0.06    2008-01-08
         Builds on Solaris but dtperl is static.
+
+0.07    2008-01-11
+        Added test for dtrace enabled Perl.
+        Added test for dtrace not supporting -h switch.
+

@@ -6,6 +6,9 @@ sub fib {
     return fib( $n - 1 ) + fib( $n - 2 );
 }
 
+print fib(8), "\n";
+exit;
+
 while ( 1 ) {
     print fib( int( rand( 40 ) ) ), "\n";
 }
