@@ -4,6 +4,7 @@
  */
 
 provider perlxs {
-    probe sub__entry(char*, char*, int, int);
-    probe sub__return(char*, char*, int, int);
+    probe sub__entry(char*, char*, int);
+    probe sub__stack(char*, char*, int, char *, int);
+    probe sub__return(char*, char*, int);
 };
