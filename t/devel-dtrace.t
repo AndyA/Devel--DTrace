@@ -17,6 +17,12 @@ for my $method ( @methods ) {
     for my $script ( @scripts ) {
         my ( $name, $todo, $want ) = @$script;
         my $got = dtrace_run( @cmd, $name );
+
+        if ( @$want && $want->[0] eq ':tail:' ) {
+            $want = [ @{$want}[ 1 .. $#$want ] ];
+            $got  = [ @{$got}[ $#$got - $#$want .. $#$got ] ];
+        }
+
         TODO: {
             local $TODO = $todo if $todo;
             eq_or_diff $got, $want, "$type, $name: ok";

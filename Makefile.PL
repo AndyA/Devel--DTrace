@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 use ExtUtils::Embed;
 use Config;
 
-require 5.008;
+require 5.008001;
 
 use constant IS_SOLARIS => ( $^O =~ /solaris/ );
 
@@ -68,7 +68,8 @@ my %args = (
     PL_FILES      => {},
     PREREQ_PM     => {
         'Test::More'        => 0,
-        'Test::Differences' => 0
+        'Test::Differences' => 0,
+        'List::Util'        => 0,
     },
     OBJECT    => join( ' ', @obj, 'DTrace.o' ),
     EXE_FILES => ['dtperl'],
