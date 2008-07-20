@@ -55,6 +55,13 @@ if ( $Config{usedtrace} ) {
       . "Will still build Devel::DTrace but you probably don't need it.\n";
 }
 
+if ( $] < 5.008008 ) {
+    print
+      "The dtperl instrumented Perl executable doesn't seem to work\n"
+      . "with Perls older than 5.8.8. I'll build it but be aware that\n"
+      . "it will be untested and may be unusable. Sorry about that\n";
+}
+
 my @obj = ( 'runops.o', ( $DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (

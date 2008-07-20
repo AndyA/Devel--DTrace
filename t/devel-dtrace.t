@@ -5,10 +5,12 @@ use Test::Differences;
 
 my @scripts = map { [ $_, reference( $_ ) ] } glob 't/scripts/*.pl';
 
-my @methods = (
-    [ 'module', $^X, ( map { "-I$_" } @INC ), '-MDevel::DTrace' ],
-    [ 'dtperl', './dtperl' ],
-);
+my @methods
+  = ( [ 'module', $^X, ( map { "-I$_" } @INC ), '-MDevel::DTrace' ], );
+
+if ( $] >= 5.008008 ) {
+    push @methods, [ 'dtperl', './dtperl' ];
+}
 
 plan tests => 1 * @scripts * @methods;
 
