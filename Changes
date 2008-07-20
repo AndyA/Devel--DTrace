@@ -24,5 +24,8 @@ Revision history for Devel-DTrace
         Added test for dtrace enabled Perl.
         Added test for dtrace not supporting -h switch.
 
-0.08	2008-01-12
-	Made detection of need for object file automatic.
+0.08	2008-07-20
+	    Made detection of need for object file automatic.
+	    Made it possible to supply flags to dtrace like this:
+	    DTRACEFLAGS=foo make (thanks Theo)
+

@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 use ExtUtils::Embed;
 use Config;
 
-require 5.008;
+require 5.008001;
 
 use constant IS_SOLARIS => ( $^O =~ /solaris/ );
 
@@ -52,7 +52,15 @@ unless (
 
 if ( $Config{usedtrace} ) {
     print "Your Perl already supports DTrace natively.\n"
-      . "Will still build Devel::DTrace but you probably don't need it.\n";
+      . "Will still build Devel::DTrace but you probably don't need it.\n\n";
+}
+
+if ( $] < 5.008008 ) {
+    print
+      "The dtperl instrumented Perl executable doesn't seem to work\n"
+      . "with Perls older than 5.8.8 (your $^X is $]).\n"
+      . "I'll build it but be aware that it will be untested and may\n"
+      . "be unusable. Sorry about that\n\n";
 }
 
 my @obj = ( 'runops.o', ( $DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
@@ -68,7 +76,8 @@ my %args = (
     PL_FILES      => {},
     PREREQ_PM     => {
         'Test::More'        => 0,
-        'Test::Differences' => 0
+        'Test::Differences' => 0,
+        'List::Util'        => 0,
     },
     OBJECT    => join( ' ', @obj, 'DTrace.o' ),
     EXE_FILES => ['dtperl'],

@@ -14,14 +14,13 @@
 
 #ifdef RUNOPS_FAKE
 
-#define PROBE_ENTRY(func, file, line)                       \
-    if ( func && file ) {                                   \
-        printf( "ENTRY(%s, %s, %d)\n", func, file, line );  \
-	    _stack_probe(aTHX_ func, file, line);	            \
+#define PROBE_ENTRY(func, file, line)               \
+    if ( func && file ) {                           \
+        printf( "ENTRY(%s, %s, %d)\n", func, file, line ); \
     }
 
-#define PROBE_RETURN(func, file, line)                      \
-    if ( func && file ) {                                   \
+#define PROBE_RETURN(func, file, line)              \
+    if ( func && file ) {                           \
         printf( "RETURN(%s, %s, %d)\n", func, file, line ); \
     }
 
@@ -30,12 +29,9 @@
 #else
 
 #define PROBE_ENTRY(func, file, line)                       \
-    if ( PERLXS_SUB_ENTRY_ENABLED(  ) && func && file ) {   \
-        PERLXS_SUB_ENTRY( func, file, line );               \
-        if ( PERLXS_SUB_STACK_ENABLED() ) {                 \
-        	_stack_probe(aTHX_ func, file, line);           \
-        }                                                   \
-    }
+if ( PERLXS_SUB_ENTRY_ENABLED(  ) && func && file ) {       \
+    PERLXS_SUB_ENTRY( func, file, line );                   \
+}
 
 #define PROBE_RETURN(func, file, line)                      \
     if ( PERLXS_SUB_RETURN_ENABLED(  ) && func && file ) {  \

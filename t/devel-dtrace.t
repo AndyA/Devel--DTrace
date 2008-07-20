@@ -5,10 +5,12 @@ use Test::Differences;
 
 my @scripts = map { [ $_, reference( $_ ) ] } glob 't/scripts/*.pl';
 
-my @methods = (
-    [ 'module', $^X, ( map { "-I$_" } @INC ), '-MDevel::DTrace' ],
-    [ 'dtperl', './dtperl' ],
-);
+my @methods
+  = ( [ 'module', $^X, ( map { "-I$_" } @INC ), '-MDevel::DTrace' ], );
+
+if ( $] >= 5.008008 ) {
+    push @methods, [ 'dtperl', './dtperl' ];
+}
 
 plan tests => 1 * @scripts * @methods;
 
@@ -17,6 +19,12 @@ for my $method ( @methods ) {
     for my $script ( @scripts ) {
         my ( $name, $todo, $want ) = @$script;
         my $got = dtrace_run( @cmd, $name );
+
+        if ( @$want && $want->[0] eq ':tail:' ) {
+            $want = [ @{$want}[ 1 .. $#$want ] ];
+            $got  = [ @{$got}[ $#$got - $#$want .. $#$got ] ];
+        }
+
         TODO: {
             local $TODO = $todo if $todo;
             eq_or_diff $got, $want, "$type, $name: ok";
