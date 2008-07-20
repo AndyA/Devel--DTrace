@@ -98,13 +98,13 @@ sub MY::postamble {
     my @mf = (
         rule(
             'plxsdtrace.h' => 'plxsdtrace.d',
-            "$dtrace -h -s plxsdtrace.d -o plxsdtrace.h"
+            "$dtrace \$(DTRACEFLAGS) -h -s plxsdtrace.d -o plxsdtrace.h"
         ),
         (
             $DTRACE_OBJ
             ? rule(
                 'plxsdtrace.o' => 'plxsdtrace.d runops.o',
-                "$dtrace -G -s plxsdtrace.d runops.o -o plxsdtrace.o"
+                "$dtrace \$(DTRACEFLAGS) -G -s plxsdtrace.d runops.o -o plxsdtrace.o"
               )
             : ()
         ),
