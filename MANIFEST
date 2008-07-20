@@ -15,6 +15,7 @@ t/devel-dtrace.t
 t/scripts/eval.pl
 t/scripts/fib.pl
 t/scripts/fump.pl
+t/scripts/xs.pl
 TODO
 xt/author/pod-coverage.t
 xt/author/pod.t
