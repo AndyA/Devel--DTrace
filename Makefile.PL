@@ -63,6 +63,13 @@ if ( $] < 5.008008 ) {
       . "be unusable. Sorry about that\n\n";
 }
 
+if ( IS_SOLARIS ) {
+    print
+      "The dtperl instrumented Perl executable doesn't seem to work\n"
+      . "on Solaris. I'll build it but be aware that it will be\n"
+      . "untested and may be unusable. Sorry about that\n\n";
+}
+
 my @obj = ( 'runops.o', ( $DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (

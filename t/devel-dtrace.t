@@ -3,12 +3,14 @@ use warnings;
 use Test::More;
 use Test::Differences;
 
+use constant IS_SOLARIS => ( $^O =~ /solaris/ );
+
 my @scripts = map { [ $_, reference( $_ ) ] } glob 't/scripts/*.pl';
 
 my @methods
   = ( [ 'module', $^X, ( map { "-I$_" } @INC ), '-MDevel::DTrace' ], );
 
-if ( $] >= 5.008008 ) {
+if ( $] >= 5.008008 && !IS_SOLARIS ) {
     push @methods, [ 'dtperl', './dtperl' ];
 }
 
