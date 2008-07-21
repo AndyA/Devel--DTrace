@@ -65,12 +65,20 @@ RUNOPS_DTRACE( pTHX ) {
         }
         else if ( last_op && IS_ENTERSUB( last_op ) ) {
             /* enter sub */
-            last_func = _sub_name( aTHX );
-            PROBE_ENTRY( ( char * ) last_func, CopFILE( PL_curcop ),
-                         CopLINE( PL_curcop ) );
+            /* need to check the sp has actually changed because
+             * OP_ENTERSUB is used for XS too. 
+             */
+            if ( last_cxstack_ix != cxstack_ix ) {
+                last_func = _sub_name( aTHX );
+                PROBE_ENTRY( ( char * ) last_func, CopFILE( PL_curcop ),
+                             CopLINE( PL_curcop ) );
+            }
         }
         else if ( cxstack_ix < last_cxstack_ix ) {
             /* leave sub or eval */
+            /* TODO: This doesn't feel quite right. What happens when a
+             * number of stack frames are dropped by a die for example? 
+             */
             if ( eval_depth > 0 ) {
                 eval_depth--;
             }

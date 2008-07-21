@@ -29,6 +29,7 @@ Revision history for Devel-DTrace
         Made it possible to supply flags to dtrace like this:
         DTRACEFLAGS=foo make (thanks Theo)
 
-0.09
+0.09    2008-07-21
         Warn about unreliability of dtperl on Solaris and skip tests.
+        Fix entry to XS subs.
 
