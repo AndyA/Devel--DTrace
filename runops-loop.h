@@ -59,12 +59,6 @@ RUNOPS_DTRACE( pTHX ) {
     const OP *last_op = NULL;
     const OP *next_op = NULL;
 
-    /* TODO: Use save_destructor(_x) to install a hook that's called on
-     * scope exit so we match RETURNS with ENTRIES.
-     * TODO: Remove last_op, last_cxstack_ix, last_func and do the test
-     * /before/ calling the op.
-     */
-
     while ( PL_op ) {
         last_op = PL_op;
         next_op = PL_op->op_next;
