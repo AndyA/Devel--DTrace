@@ -33,3 +33,8 @@ Revision history for Devel-DTrace
         Warn about unreliability of dtperl on Solaris and skip tests.
         Fix entry to XS subs.
 
+0.10    2008-07-22
+        Complete rewrite of runops loop. Perl's scope exit mechanism is
+        now used to report subroutine returns. I think it might actually
+        be valid now rather than working more or less by accident as it
+        did previously.
