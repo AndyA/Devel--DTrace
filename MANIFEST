@@ -12,6 +12,7 @@ runops.c
 runops.h
 t/000-load.t
 t/devel-dtrace.t
+t/scripts/dies.pl
 t/scripts/eval.pl
 t/scripts/fib.pl
 t/scripts/fump.pl

@@ -11,6 +11,7 @@
 #undef PROBE_ENTRY
 #undef PROBE_RETURN
 #undef RUNOPS_DTRACE
+#undef RUNOPS_SUB_EXIT
 
 #ifdef RUNOPS_FAKE
 
@@ -24,7 +25,8 @@
         printf( "RETURN(%s, %s, %d)\n", func, file, line ); \
     }
 
-#define RUNOPS_DTRACE _runops_dtrace_fake
+#define RUNOPS_DTRACE   _runops_dtrace_fake
+#define RUNOPS_SUB_EXIT _runops_sub_exit_fake
 
 #else
 
@@ -38,59 +40,54 @@ if ( PERLXS_SUB_ENTRY_ENABLED(  ) && func && file ) {       \
         PERLXS_SUB_RETURN( func, file, line );              \
     }
 
-#define RUNOPS_DTRACE _runops_dtrace
+#define RUNOPS_DTRACE   _runops_dtrace
+#define RUNOPS_SUB_EXIT _runops_sub_exit
 
 #endif
 
 #define IS_ENTERSUB(op) \
     ((op->op_type) == OP_ENTERSUB)
 
-#define IS_ENTEREVAL(op) \
-    ((op->op_type) == OP_ENTEREVAL || \
-     (op->op_type) == OP_ENTERTRY)
+STATIC void
+RUNOPS_SUB_EXIT( pTHX_ void *sub_name ) {
+    PROBE_RETURN( ( char * ) sub_name,
+                  CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
+}
 
 STATIC int
 RUNOPS_DTRACE( pTHX ) {
     const OP *last_op = NULL;
+    const OP *next_op = NULL;
     I32 last_cxstack_ix = 0;
     const char *last_func = NULL;
     I32 eval_depth = 0;
 
-    while ( ( PL_op = CALL_FPTR( PL_op->op_ppaddr ) ( aTHX ) ) ) {
-        PERL_ASYNC_CHECK(  );
+    /* TODO: Use save_destructor(_x) to install a hook that's called on
+     * scope exit so we match RETURNS with ENTRIES.
+     * TODO: Remove last_op, last_cxstack_ix, last_func and do the test
+     * /before/ calling the op.
+     */
 
-        if ( last_op && IS_ENTEREVAL( last_op ) ) {
-            /* enter eval */
-            eval_depth++;
-        }
-        else if ( last_op && IS_ENTERSUB( last_op ) ) {
-            /* enter sub */
-            /* need to check the sp has actually changed because
-             * OP_ENTERSUB is used for XS too. 
-             */
-            if ( last_cxstack_ix != cxstack_ix ) {
-                last_func = _sub_name( aTHX );
-                PROBE_ENTRY( ( char * ) last_func, CopFILE( PL_curcop ),
-                             CopLINE( PL_curcop ) );
-            }
-        }
-        else if ( cxstack_ix < last_cxstack_ix ) {
-            /* leave sub or eval */
-            /* TODO: This doesn't feel quite right. What happens when a
-             * number of stack frames are dropped by a die for example? 
-             */
-            if ( eval_depth > 0 ) {
-                eval_depth--;
-            }
-            else {
-                PROBE_RETURN( ( char * ) last_func,
-                              CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
-                last_func = _sub_name( aTHX );
-            }
-        }
-
+    while ( PL_op ) {
         last_op = PL_op;
-        last_cxstack_ix = cxstack_ix;
+        next_op = PL_op->op_next;
+
+        if ( PL_op = CALL_FPTR( PL_op->op_ppaddr ) ( aTHX ), PL_op ) {
+            PERL_ASYNC_CHECK(  );
+        }
+
+        if ( IS_ENTERSUB( last_op ) ) {
+            /* If we just called XS we'll now be at the next op. If we
+             * called a Perl subroutine we'll be executing its first op
+             * instead. 
+             */
+            if ( PL_op != next_op ) {
+                char *sub_name = ( char * ) _sub_name( aTHX );
+                PROBE_ENTRY( sub_name, CopFILE( PL_curcop ),
+                             CopLINE( PL_curcop ) );
+                save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
+            }
+        }
     }
 
     TAINT_NOT;
