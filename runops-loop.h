@@ -58,9 +58,6 @@ STATIC int
 RUNOPS_DTRACE( pTHX ) {
     const OP *last_op = NULL;
     const OP *next_op = NULL;
-    I32 last_cxstack_ix = 0;
-    const char *last_func = NULL;
-    I32 eval_depth = 0;
 
     /* TODO: Use save_destructor(_x) to install a hook that's called on
      * scope exit so we match RETURNS with ENTRIES.
