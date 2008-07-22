@@ -67,17 +67,15 @@ RUNOPS_DTRACE( pTHX ) {
             PERL_ASYNC_CHECK(  );
         }
 
-        if ( IS_ENTERSUB( last_op ) ) {
+        if ( IS_ENTERSUB( last_op ) && PL_op != next_op ) {
             /* If we just called XS we'll now be at the next op. If we
              * called a Perl subroutine we'll be executing its first op
              * instead. 
              */
-            if ( PL_op != next_op ) {
-                char *sub_name = ( char * ) _sub_name( aTHX );
-                PROBE_ENTRY( sub_name, CopFILE( PL_curcop ),
-                             CopLINE( PL_curcop ) );
-                save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
-            }
+            char *sub_name = ( char * ) _sub_name( aTHX );
+            PROBE_ENTRY( sub_name, CopFILE( PL_curcop ),
+                         CopLINE( PL_curcop ) );
+            save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
         }
     }
 
