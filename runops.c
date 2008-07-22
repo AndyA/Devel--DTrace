@@ -10,6 +10,10 @@ _curcv( pTHX ) {
     PERL_SI *st = PL_curstackinfo;
     I32 ix = st->si_cxix;
 
+    /* It's unclear whether we really need all this given that we call
+     * _curcv on the first OP after subroutine entry - so presumably not
+     * much can have happened by then. 
+     */
     for ( ;; ) {
         const PERL_CONTEXT *const cx = &st->si_cxstack[ix];
         if ( CxTYPE( cx ) == CXt_SUB || CxTYPE( cx ) == CXt_FORMAT )
