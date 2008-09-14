@@ -46,11 +46,12 @@ C<dtperl> can be probed using C<dtrace>.
 
 Note that C<dtrace> can't find any probes in the Perl executable until
 after C<Devel::DTrace> has loaded - because before then the probes don't
-exist. That means that you can't use C<dtrace> to launch the perl
-executable. Perl must already be running and have loaded
-C<Devel::DTrace> before you can connect to it with C<dtrace>.
+exist. That means that you must use e.g.
 
-The C<dtperl> interpreter does not have this limitation.
+    dtrace -Z -n 'perlxs$target:::{ trace(copyinstr(arg0)); }' -c
+
+The C<-Z> switch tells dtrace that the named probe doesn't yet exist.
+Thanks to Chris Andrews for the suggestion.
 
 On Solaris C<dtperl> is statically linked and therefore probably not
 much use. Working out why I can't build a dynamic C<dtperl> is high on

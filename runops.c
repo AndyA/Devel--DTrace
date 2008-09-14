@@ -59,10 +59,19 @@ _should_fake(  ) {
 
 void
 runops_hook(  ) {
+#if 1
     runops_proc_t runops =
         _should_fake(  )? _runops_dtrace_fake : _runops_dtrace;
 
     if ( PL_runops != runops ) {
         PL_runops = runops;
     }
+#else
+    if ( _should_fake(  ) ) {
+        _runops_install_fake(  );
+    }
+    else {
+        _runops_install(  );
+    }
+#endif
 }
