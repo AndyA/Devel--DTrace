@@ -5,14 +5,14 @@ use List::Util qw( reduce );
 $| = 1;
 
 sub sum {
-    my ( $x, $y ) = @_;
-    return $x + $y;
+  my ( $x, $y ) = @_;
+  return $x + $y;
 }
 
 sub total {
-    my @l = @_;
-    my $t = reduce { sum( $a, $b ) } @l;
-    return $t;
+  my @l = @_;
+  my $t = reduce { sum( $a, $b ) } @l;
+  return $t;
 }
 
 my $tot = total( 1, 2, 4, 18 );

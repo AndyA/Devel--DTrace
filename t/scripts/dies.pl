@@ -1,9 +1,9 @@
 #!perl
 
 sub deep {
-    my $n = shift;
-    die "Too deep" if $n == 0;
-    deep( $n - 1 );
+  my $n = shift;
+  die "Too deep" if $n == 0;
+  deep( $n - 1 );
 }
 
 eval { deep( 10 ) };

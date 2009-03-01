@@ -3,7 +3,7 @@
 sub xx { }
 
 sub yy {
-    eval { xx() };
+  eval { xx() };
 }
 
 yy();

@@ -74,9 +74,9 @@ in some cases to
 =cut
 
 BEGIN {
-    our $VERSION = '0.11';
-    bootstrap Devel::DTrace $VERSION;
-    _dtrace_hook_runops();
+  our $VERSION = '0.11';
+  bootstrap Devel::DTrace $VERSION;
+  _dtrace_hook_runops();
 }
 
 1;

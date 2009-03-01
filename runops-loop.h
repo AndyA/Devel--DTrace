@@ -59,31 +59,30 @@ if ( PERLXS_SUB_ENTRY_ENABLED(  ) && func && file ) {       \
 
 STATIC void
 RUNOPS_SUB_EXIT( pTHX_ void *sub_name ) {
-    PROBE_RETURN( ( char * ) sub_name,
-                  CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
+  PROBE_RETURN( ( char * ) sub_name,
+                CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
 }
 
 OP *( *RUNOPS_SAVED_ENTERSUB ) ( pTHX );
 
 STATIC OP *
 RUNOPS_ENTERSUB( pTHX ) {
-    const OP *next_op = PL_op->op_next;
-    OP *got_op = RUNOPS_SAVED_ENTERSUB( aTHX );
-    if ( got_op != next_op ) {
-        char *sub_name = ( char * ) _sub_name( aTHX );
-        PROBE_ENTRY( sub_name, CopFILE( PL_curcop ),
-                     CopLINE( PL_curcop ) );
-        save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
-    }
-    return got_op;
+  const OP *next_op = PL_op->op_next;
+  OP *got_op = RUNOPS_SAVED_ENTERSUB( aTHX );
+  if ( got_op != next_op ) {
+    char *sub_name = ( char * ) _sub_name( aTHX );
+    PROBE_ENTRY( sub_name, CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
+    save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
+  }
+  return got_op;
 }
 
 STATIC void
 RUNOPS_INSTALL( void ) {
-    if ( PL_ppaddr[OP_ENTERSUB] != RUNOPS_ENTERSUB ) {
-        RUNOPS_SAVED_ENTERSUB = PL_ppaddr[OP_ENTERSUB];
-        PL_ppaddr[OP_ENTERSUB] = RUNOPS_ENTERSUB;
-    }
+  if ( PL_ppaddr[OP_ENTERSUB] != RUNOPS_ENTERSUB ) {
+    RUNOPS_SAVED_ENTERSUB = PL_ppaddr[OP_ENTERSUB];
+    PL_ppaddr[OP_ENTERSUB] = RUNOPS_ENTERSUB;
+  }
 }
 
 /* TODO: We don't need to replace runops - we could instead just patch
@@ -92,29 +91,28 @@ RUNOPS_INSTALL( void ) {
  */
 STATIC int
 RUNOPS_DTRACE( pTHX ) {
-    const OP *last_op = NULL;
-    const OP *next_op = NULL;
+  const OP *last_op = NULL;
+  const OP *next_op = NULL;
 
-    while ( PL_op ) {
-        last_op = PL_op;
-        next_op = PL_op->op_next;
+  while ( PL_op ) {
+    last_op = PL_op;
+    next_op = PL_op->op_next;
 
-        if ( PL_op = CALL_FPTR( PL_op->op_ppaddr ) ( aTHX ), PL_op ) {
-            PERL_ASYNC_CHECK(  );
-        }
-
-        /* If we just called XS we'll now be at the next op. If we
-         * called a Perl subroutine we'll be executing its first op
-         * instead. We're only interested in Perl subs.
-         */
-        if ( IS_ENTERSUB( last_op ) && PL_op != next_op ) {
-            char *sub_name = ( char * ) _sub_name( aTHX );
-            PROBE_ENTRY( sub_name, CopFILE( PL_curcop ),
-                         CopLINE( PL_curcop ) );
-            save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
-        }
+    if ( PL_op = CALL_FPTR( PL_op->op_ppaddr ) ( aTHX ), PL_op ) {
+      PERL_ASYNC_CHECK(  );
     }
 
-    TAINT_NOT;
-    return 0;
+    /* If we just called XS we'll now be at the next op. If we
+     * called a Perl subroutine we'll be executing its first op
+     * instead. We're only interested in Perl subs.
+     */
+    if ( IS_ENTERSUB( last_op ) && PL_op != next_op ) {
+      char *sub_name = ( char * ) _sub_name( aTHX );
+      PROBE_ENTRY( sub_name, CopFILE( PL_curcop ), CopLINE( PL_curcop ) );
+      save_destructor_x( RUNOPS_SUB_EXIT, sub_name );
+    }
+  }
+
+  TAINT_NOT;
+  return 0;
 }
