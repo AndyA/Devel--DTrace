@@ -1,5 +1,7 @@
 #!perl
 
+# TODO Depends on List::Utils version
+
 use List::Util qw( reduce );
 
 $| = 1;
