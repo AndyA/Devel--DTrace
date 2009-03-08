@@ -72,10 +72,10 @@ my @obj = ( 'runops.o', ( $DTRACE_OBJ ? ( 'plxsdtrace.o' ) : () ) );
 
 my %args = (
   ( MM->can( 'signature_target' ) ? ( SIGN => 1 ) : () ),
+  license( 'perl' ),
 
   NAME          => 'Devel::DTrace',
   AUTHOR        => 'Andy Armstrong <andy@hexten.net>',
-  LICENSE       => 'perl',
   VERSION_FROM  => 'lib/Devel/DTrace.pm',
   ABSTRACT_FROM => 'lib/Devel/DTrace.pm',
   PL_FILES      => {},
@@ -130,4 +130,12 @@ sub MY::postamble {
   ( my $postamble = join "\n\n", @mf ) =~ s/^ +/\t/mg;
 
   return $postamble;
+}
+
+sub license {
+  my $lic = shift;
+  local $^W = 0;    # Silence warning about non-numeric version
+  return
+   unless $ExtUtils::MakeMaker::VERSION >= '6.31';
+  return ( LICENSE => $lic );
 }
